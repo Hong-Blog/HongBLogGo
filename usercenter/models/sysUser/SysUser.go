@@ -4,6 +4,7 @@ import (
 	"github.com/guregu/null"
 	"log"
 	"usercenter/db"
+	"usercenter/models"
 )
 
 type SysUser struct {
@@ -37,12 +38,63 @@ type SysUser struct {
 	UpdateTime    null.Time   `json:"update_time" db:"update_time"`         // 更新时间
 }
 
-func GetAllUser() (list []SysUser) {
-	var users []SysUser
-	strSql := "SELECT * FROM sys_user"
-	err := db.Db.Select(&users, strSql)
+type GetAllUserRequest struct {
+	models.PagedRequest
+	KeyWord string `json:"key_word"`
+}
+
+func GetAllUser(request GetAllUserRequest) (list []SysUser, count int) {
+	strSql := `
+select id,
+       username,
+       password,
+       nickname,
+       mobile,
+       email,
+       qq,
+       birthday,
+       gender,
+       avatar,
+       user_type,
+       company,
+       blog,
+       location,
+       source,
+       uuid,
+       privacy,
+       notification,
+       score,
+       experience,
+       reg_ip,
+       last_login_ip,
+       last_login_time,
+       login_count,
+       remark,
+       status,
+       create_time,
+       update_time
+from sys_user
+`
+	var params = make([]interface{}, 0)
+	var filter string
+	if len(request.KeyWord) != 0 {
+		filter = "where username like ?\n"
+		params = append(params, "%"+request.KeyWord+"%")
+	}
+	strSql += filter + "limit ?, ?;"
+	countSql := "select count(1) from sys_user " + filter
+	err := db.Db.Get(&count, countSql, params...)
+	if err != nil {
+		log.Panicln("count sys_user err: ", err.Error())
+	}
+
+	offset, limit := request.GetLimit()
+	params = append(params, offset)
+	params = append(params, limit)
+	err = db.Db.Select(&list, strSql, params...)
 	if err != nil {
 		log.Panicln("select sys_user err: ", err.Error())
 	}
-	return users
+
+	return
 }
