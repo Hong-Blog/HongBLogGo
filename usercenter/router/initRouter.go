@@ -3,7 +3,8 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"usercenter/handler"
+	"usercenter/handler/roleHandler"
+	"usercenter/handler/userHandler"
 )
 
 func SetupRouter() *gin.Engine {
@@ -13,8 +14,12 @@ func SetupRouter() *gin.Engine {
 
 	userRouter := router.Group(`user`)
 	{
-		userRouter.GET(`/`, handler.UserList)
-		userRouter.GET(`/:id`, handler.UserList)
+		userRouter.GET(`/`, userHandler.UserList)
+	}
+
+	roleRouter := router.Group("role")
+	{
+		roleRouter.GET("/", roleHandler.RoleList)
 	}
 
 	return router

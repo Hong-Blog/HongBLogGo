@@ -78,10 +78,10 @@ from sys_user
 	var params = make([]interface{}, 0)
 	var filter string
 	if len(request.KeyWord) != 0 {
-		filter = "where username like ?\n"
+		filter = " where username like ? "
 		params = append(params, "%"+request.KeyWord+"%")
 	}
-	strSql += filter + "limit ?, ?;"
+	strSql += filter + " limit ?, ?;"
 	countSql := "select count(1) from sys_user " + filter
 	err := db.Db.Get(&count, countSql, params...)
 	if err != nil {
