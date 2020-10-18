@@ -2,6 +2,7 @@ package userHandler
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strconv"
 	"usercenter/models"
@@ -23,4 +24,13 @@ func UserList(c *gin.Context) {
 	res.Data = users
 
 	c.JSON(http.StatusOK, res)
+}
+
+func GetById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Panicln("get user by id no found id", err.Error())
+	}
+	user := sysUser.GetById(id)
+	c.JSON(http.StatusOK, user)
 }

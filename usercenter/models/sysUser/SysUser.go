@@ -98,3 +98,44 @@ from sys_user
 
 	return
 }
+
+func GetById(id int) (user SysUser) {
+	sysUser := SysUser{}
+	dataSql := `
+select id,
+       username,
+       password,
+       nickname,
+       mobile,
+       email,
+       qq,
+       birthday,
+       gender,
+       avatar,
+       user_type,
+       company,
+       blog,
+       location,
+       source,
+       uuid,
+       privacy,
+       notification,
+       score,
+       experience,
+       reg_ip,
+       last_login_ip,
+       last_login_time,
+       login_count,
+       remark,
+       status,
+       create_time,
+       update_time
+from sys_user
+where id = ?
+`
+	err := db.Db.Get(&sysUser, dataSql, id)
+	if err != nil {
+		log.Panicln("get user by id err: ", err.Error())
+	}
+	return sysUser
+}

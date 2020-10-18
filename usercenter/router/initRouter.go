@@ -15,6 +15,7 @@ func SetupRouter() *gin.Engine {
 	userRouter := router.Group(`user`)
 	{
 		userRouter.GET(`/`, userHandler.UserList)
+		userRouter.GET(":id", userHandler.GetById)
 	}
 
 	roleRouter := router.Group("role")
