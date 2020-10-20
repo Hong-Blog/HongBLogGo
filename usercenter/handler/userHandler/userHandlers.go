@@ -34,3 +34,21 @@ func GetById(c *gin.Context) {
 	user := sysUser.GetById(id)
 	c.JSON(http.StatusOK, user)
 }
+
+func UpdateUser(c *gin.Context) {
+	req := sysUser.UpdateUserRequest{}
+	req.Id, _ = strconv.Atoi(c.Param("id"))
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	log.Println(req)
+
+	success := sysUser.UpdateUser(req)
+	if !success {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "更新失败"})
+		return
+	}
+	c.String(http.StatusOK, "")
+}

@@ -43,6 +43,14 @@ type GetAllUserRequest struct {
 	KeyWord string `json:"key_word"`
 }
 
+type UpdateUserRequest struct {
+	Id       int    `uri:"id"`
+	Nickname string `json:"nickname"` // 昵称
+	Mobile   string `json:"mobile"`   // 手机号
+	Email    string `json:"email"`    // 邮箱地址
+	Qq       string `json:"qq"`       // QQ
+}
+
 func GetAllUser(request GetAllUserRequest) (list []SysUser, count int) {
 	strSql := `
 select id,
@@ -138,4 +146,24 @@ where id = ?
 		log.Panicln("get user by id err: ", err.Error())
 	}
 	return sysUser
+}
+
+func UpdateUser(request UpdateUserRequest) (success bool) {
+	updateSql := `
+update sys_user
+set nickname = ?,
+    mobile = ?,
+    email = ?,
+    qq = ?
+where id = ?;
+`
+	result, err := db.Db.Exec(updateSql, request.Nickname, request.Mobile, request.Email, request.Qq, request.Id)
+	if err != nil {
+		log.Panicln("update user by id err: ", err.Error())
+	}
+	affected, err1 := result.RowsAffected()
+	if err1 != nil {
+		log.Panicln("not support affected err: ", err1.Error())
+	}
+	return affected > 0
 }

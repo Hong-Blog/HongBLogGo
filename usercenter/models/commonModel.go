@@ -15,3 +15,7 @@ type PagedResponse struct {
 	Total int         `json:"total"`
 	Data  interface{} `json:"data"`
 }
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
