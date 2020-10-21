@@ -43,11 +43,25 @@ func UpdateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
-	log.Println(req)
 
 	success := sysUser.UpdateUser(req)
 	if !success {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "更新失败"})
+		return
+	}
+	c.String(http.StatusOK, "")
+}
+
+func AddUser(c *gin.Context) {
+	req := sysUser.AddUserRequest{}
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	log.Println(req)
+	success := sysUser.AddUser(req)
+	if !success {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "添加用户失败"})
 		return
 	}
 	c.String(http.StatusOK, "")

@@ -51,6 +51,15 @@ type UpdateUserRequest struct {
 	Qq       string `json:"qq"`       // QQ
 }
 
+type AddUserRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"` // 登录密码
+	Nickname string `json:"nickname"` // 昵称
+	Mobile   string `json:"mobile"`   // 手机号
+	Email    string `json:"email"`    // 邮箱地址
+	Qq       string `json:"qq"`       // QQ
+}
+
 func GetAllUser(request GetAllUserRequest) (list []SysUser, count int) {
 	strSql := `
 select id,
@@ -166,4 +175,42 @@ where id = ?;
 		log.Panicln("not support affected err: ", err1.Error())
 	}
 	return affected > 0
+}
+
+func AddUser(request AddUserRequest) (success bool) {
+	insertSql := `
+INSERT INTO sys_user (
+  username,
+  PASSWORD,
+  nickname,
+  mobile,
+  email,
+  qq,
+  user_type,
+  STATUS,
+  create_time
+)
+VALUES
+  (?, ?, ?, ?, ?, ?, 'ADMIN', 1, NOW());
+`
+	result, err := db.Db.Exec(insertSql, request.Username, request.Password, request.Nickname,
+		request.Mobile, request.Email, request.Qq)
+	if err != nil {
+		log.Panicln("add user  err: ", err.Error())
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		log.Panicln("not support affected err: ", err.Error())
+	}
+	return affected > 0
+}
+
+const security_key = "929123f8f17944e8b0a531045453e1f1"
+
+func encryptPassword(password string) string {
+	return ""
+}
+
+func decryptPassword(encryptedPassword string, salt string) string {
+	return ""
 }
