@@ -204,13 +204,3 @@ VALUES
 	}
 	return affected > 0
 }
-
-const security_key = "929123f8f17944e8b0a531045453e1f1"
-
-func encryptPassword(password string) string {
-	return ""
-}
-
-func decryptPassword(encryptedPassword string, salt string) string {
-	return ""
-}

@@ -4,23 +4,28 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/sha1"
 	"encoding/base64"
 	"fmt"
 	"log"
 )
 
-func AesDecrypt(crypted, key []byte) []byte {
-	block, err := aes.NewCipher(key)
+func AesDecrypt(encryptedContent, key string) string {
+	decodeBytes, decodeErr := base64.StdEncoding.DecodeString(encryptedContent)
+	if decodeErr != nil {
+		log.Println("base64 decode error", decodeErr)
+	}
+
+	sha1key := aesKeySecureRandom(key)
+	block, err := aes.NewCipher(sha1key)
 	if err != nil {
 		fmt.Println("err is:", err)
 	}
 	blockMode := NewECBDecrypter(block)
-	origData := make([]byte, len(crypted))
-	blockMode.CryptBlocks(origData, crypted)
+
+	origData := make([]byte, len(decodeBytes))
+	blockMode.CryptBlocks(origData, decodeBytes)
 	origData = PKCS5UnPadding(origData)
-	fmt.Println("source is :", origData, string(origData))
-	return origData
+	return string(origData)
 }
 
 func AesEncrypt(src, key string) string {
@@ -106,12 +111,6 @@ func (x *ecbDecrypter) CryptBlocks(dst, src []byte) {
 		src = src[x.blockSize:]
 		dst = dst[x.blockSize:]
 	}
-}
-
-func SHA1(data []byte) []byte {
-	h := sha1.New()
-	h.Write(data)
-	return h.Sum(nil)
 }
 
 func aesKeySecureRandom(keyword string) (key []byte) {
