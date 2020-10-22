@@ -1,10 +1,12 @@
 package sysUser
 
 import (
+	"errors"
 	"github.com/guregu/null"
 	"log"
 	"usercenter/db"
 	"usercenter/models"
+	"usercenter/utils"
 )
 
 type SysUser struct {
@@ -177,7 +179,14 @@ where id = ?;
 	return affected > 0
 }
 
-func AddUser(request AddUserRequest) (success bool) {
+func AddUser(request AddUserRequest) (success bool, err error) {
+	exsitUser := SysUser{}
+	exsitUser.Username.String = request.Username
+	if exsitUser.ExistByName() {
+		err = errors.New("用户已经存在")
+		return false, err
+	}
+
 	insertSql := `
 INSERT INTO sys_user (
   username,
@@ -193,7 +202,8 @@ INSERT INTO sys_user (
 VALUES
   (?, ?, ?, ?, ?, ?, 'ADMIN', 1, NOW());
 `
-	result, err := db.Db.Exec(insertSql, request.Username, request.Password, request.Nickname,
+	encryptedPassword := utils.PasswordEncrypt(request.Password, request.Username)
+	result, err := db.Db.Exec(insertSql, request.Username, encryptedPassword, request.Nickname,
 		request.Mobile, request.Email, request.Qq)
 	if err != nil {
 		log.Panicln("add user  err: ", err.Error())
@@ -202,5 +212,17 @@ VALUES
 	if err != nil {
 		log.Panicln("not support affected err: ", err.Error())
 	}
-	return affected > 0
+	return affected > 0, nil
+}
+
+func (u *SysUser) ExistByName() bool {
+	dataSql := `
+select ifnull((select 1 from sys_user where username = ? limit 1), 0);
+`
+	count := 0
+	err := db.Db.QueryRow(dataSql, u.Username.String).Scan(&count)
+	if err != nil {
+		log.Panicln("ExistByName err: ", err.Error())
+	}
+	return count > 0
 }

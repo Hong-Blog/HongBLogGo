@@ -58,8 +58,11 @@ func AddUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
-	log.Println(req)
-	success := sysUser.AddUser(req)
+	success, err := sysUser.AddUser(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
 	if !success {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: "添加用户失败"})
 		return
