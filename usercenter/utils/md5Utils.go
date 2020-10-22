@@ -1,5 +1,12 @@
 package utils
 
-func Md5() {
+import (
+	"crypto/md5"
+	"fmt"
+)
 
+func Md5(str string) string {
+	data := []byte(str)
+	has := md5.Sum(data)
+	return fmt.Sprintf("%X", has)
 }
