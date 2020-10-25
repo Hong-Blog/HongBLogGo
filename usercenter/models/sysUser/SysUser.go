@@ -228,3 +228,25 @@ select ifnull((select 1 from sys_user where username = ? limit 1), 0);
 	}
 	return count > 0
 }
+
+func (u *SysUser) LogicalDeleteById() (err error) {
+	dataSql := `
+update sys_user
+set is_deleted = true
+where id = ?
+`
+	result, sqlErr := db.Db.Exec(dataSql, u.Id)
+	if sqlErr != nil {
+		log.Panicln("LogicalDeleteById err: ", sqlErr.Error())
+		return sqlErr
+	}
+	affected, affectedErr := result.RowsAffected()
+	if affectedErr != nil {
+		log.Panicln("not support affected err: ", affectedErr.Error())
+		return affectedErr
+	}
+	if affected == 0 {
+		return errors.New("删除用户失败")
+	}
+	return nil
+}

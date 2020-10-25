@@ -70,3 +70,14 @@ func AddUser(c *gin.Context) {
 	}
 	c.String(http.StatusOK, "")
 }
+
+func DeleteUser(c *gin.Context) {
+	user := sysUser.SysUser{}
+	user.Id, _ = strconv.Atoi(c.Param("id"))
+
+	if err := user.LogicalDeleteById(); err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.String(http.StatusOK, "")
+}
