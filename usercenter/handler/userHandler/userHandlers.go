@@ -58,6 +58,7 @@ func AddUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
 		return
 	}
+	req.RegIp = c.ClientIP()
 	success, err := sysUser.AddUser(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})

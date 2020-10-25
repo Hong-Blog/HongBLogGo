@@ -60,6 +60,7 @@ type AddUserRequest struct {
 	Mobile   string `json:"mobile"`   // 手机号
 	Email    string `json:"email"`    // 邮箱地址
 	Qq       string `json:"qq"`       // QQ
+	RegIp    string `json:"reg_ip"`   // 注册IP
 }
 
 func GetAllUser(request GetAllUserRequest) (list []SysUser, count int) {
@@ -195,16 +196,17 @@ INSERT INTO sys_user (
   mobile,
   email,
   qq,
+  reg_ip,
   user_type,
   STATUS,
   create_time
 )
 VALUES
-  (?, ?, ?, ?, ?, ?, 'ADMIN', 1, NOW());
+  (?, ?, ?, ?, ?, ?, ?,'ADMIN', 1, NOW());
 `
 	encryptedPassword := utils.PasswordEncrypt(request.Password, request.Username)
 	result, err := db.Db.Exec(insertSql, request.Username, encryptedPassword, request.Nickname,
-		request.Mobile, request.Email, request.Qq)
+		request.Mobile, request.Email, request.Qq, request.RegIp)
 	if err != nil {
 		log.Panicln("add user  err: ", err.Error())
 	}
