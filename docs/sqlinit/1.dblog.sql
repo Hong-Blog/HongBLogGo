@@ -317,6 +317,7 @@ CREATE TABLE `sys_user`  (
   `status` int(1) UNSIGNED NULL DEFAULT NULL COMMENT '用户状态',
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` bit default b'0' not null COMMENT '是否已删除',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
