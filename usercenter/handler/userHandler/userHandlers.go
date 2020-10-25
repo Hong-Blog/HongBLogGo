@@ -81,3 +81,17 @@ func DeleteUser(c *gin.Context) {
 	}
 	c.String(http.StatusOK, "")
 }
+
+func UpdatePassword(c *gin.Context) {
+	request := sysUser.UpdatePasswordByIdRequest{}
+	request.Id, _ = strconv.Atoi(c.Param("id"))
+	if err := c.ShouldBind(&request); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	if err := sysUser.UpdatePasswordById(request); err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.String(http.StatusOK, "")
+}

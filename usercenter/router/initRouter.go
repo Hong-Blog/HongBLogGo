@@ -19,6 +19,7 @@ func SetupRouter() *gin.Engine {
 		userRouter.PUT("/:id", userHandler.UpdateUser)
 		userRouter.POST("/", userHandler.AddUser)
 		userRouter.DELETE("/:id", userHandler.DeleteUser)
+		userRouter.PUT("/:id/password", userHandler.UpdatePassword)
 	}
 
 	roleRouter := router.Group("role")

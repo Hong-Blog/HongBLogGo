@@ -63,6 +63,14 @@ type AddUserRequest struct {
 	RegIp    string `json:"reg_ip"`   // 注册IP
 }
 
+type UpdatePasswordByIdRequest struct {
+	Id               int    `json:"id"`
+	Username         string `json:"username"`
+	Password         string `json:"password"`           // 当前密码
+	NewPassword      string `json:"new_password"`       // 新密码
+	NewPasswordAgain string `json:"new_password_again"` // 新密码
+}
+
 func GetAllUser(request GetAllUserRequest) (list []SysUser, count int) {
 	strSql := `
 select id,
@@ -247,6 +255,50 @@ where id = ?
 	}
 	if affected == 0 {
 		return errors.New("删除用户失败")
+	}
+	return nil
+}
+
+func UpdatePasswordById(request UpdatePasswordByIdRequest) (err error) {
+	updateSql := `
+update sys_user
+set password = ?
+where id = ?;
+`
+	existSql := `
+select ifnull((select 1
+               from sys_user
+               where id = ?
+                 and password = ?
+               limit 1), 0)
+`
+	if request.NewPassword != request.NewPasswordAgain {
+		return errors.New("输入的密码不一致")
+	}
+
+	passwordEncrypt := utils.PasswordEncrypt(request.Password, request.Username)
+	count := 0
+	if err := db.Db.QueryRow(existSql, request.Id, passwordEncrypt).Scan(&count); err != nil {
+		log.Panicln("UpdatePasswordById err: ", err.Error())
+		return err
+	}
+
+	if count == 0 {
+		return errors.New("当前密码不正确")
+	}
+
+	newPassowrdEncrypt := utils.PasswordEncrypt(request.NewPassword, request.Username)
+	result, err := db.Db.Exec(updateSql, newPassowrdEncrypt, request.Id)
+	if err != nil {
+		log.Panicln("UpdatePasswordById err: ", err.Error())
+	}
+	affected, err := result.RowsAffected()
+	if err != nil {
+		log.Panicln("not support affected err: ", err.Error())
+		return err
+	}
+	if affected == 0 {
+		return errors.New("更新密码失败")
 	}
 	return nil
 }
