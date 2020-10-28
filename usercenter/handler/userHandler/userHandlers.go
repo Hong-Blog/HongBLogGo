@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"usercenter/models"
+	"usercenter/models/sysRole"
 	"usercenter/models/sysUser"
 )
 
@@ -94,4 +95,11 @@ func UpdatePassword(c *gin.Context) {
 		return
 	}
 	c.String(http.StatusOK, "")
+}
+
+func GetAllRoleWithCheckedByUserId(c *gin.Context) {
+	userId, _ := strconv.Atoi(c.Param("id"))
+	list := sysRole.GetAllRoleWithCheckedByUserId(userId)
+
+	c.JSON(http.StatusOK, list)
 }

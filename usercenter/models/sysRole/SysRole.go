@@ -21,6 +21,11 @@ type GetAllRoleRequest struct {
 	KeyWord string `json:"key_word"`
 }
 
+type RoleWithChecked struct {
+	SysRole
+	Checked bool `json:"checked"`
+}
+
 func GetAllRole(request GetAllRoleRequest) (list []SysRole, count int) {
 	dataSql := `
 select id, name, description, available, create_time, update_time
@@ -49,5 +54,19 @@ from sys_role
 		log.Panicln("select sys_role err: ", err.Error())
 	}
 
+	return
+}
+
+func GetAllRoleWithCheckedByUserId(userId int) (list []RoleWithChecked) {
+	dataSql := `
+select r.*, if(isnull(sur.id), 0, 1) checked
+from sys_role r
+         left join sys_user_role sur on r.id = sur.role_id and sur.user_id = ?
+order by r.id
+`
+	err := db.Db.Select(&list, dataSql, userId)
+	if err != nil {
+		log.Panicln("GetAllRoleWithCheckedByUserId err: ", err.Error())
+	}
 	return
 }

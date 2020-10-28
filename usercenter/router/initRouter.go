@@ -12,14 +12,15 @@ func SetupRouter() *gin.Engine {
 	router.GET("/", index)
 	router.GET("ping", ping)
 
-	userRouter := router.Group(`user`)
+	userRouter := router.Group(`users`)
 	{
 		userRouter.GET(`/`, userHandler.UserList)
 		userRouter.GET("/:id", userHandler.GetById)
 		userRouter.PUT("/:id", userHandler.UpdateUser)
 		userRouter.POST("/", userHandler.AddUser)
 		userRouter.DELETE("/:id", userHandler.DeleteUser)
-		userRouter.PUT("/:id/password", userHandler.UpdatePassword)
+		userRouter.PUT("/:id/attr/password", userHandler.UpdatePassword)
+		userRouter.GET("/:id/roles", userHandler.GetAllRoleWithCheckedByUserId)
 	}
 
 	roleRouter := router.Group("role")
