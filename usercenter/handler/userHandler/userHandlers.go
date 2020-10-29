@@ -103,3 +103,15 @@ func GetAllRoleWithCheckedByUserId(c *gin.Context) {
 
 	c.JSON(http.StatusOK, list)
 }
+
+func UpdateUserRole(c *gin.Context) {
+	var json sysUser.UpdateUserRoleRequest
+	userId, _ := strconv.Atoi(c.Param("id"))
+	json.Id = userId
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		return
+	}
+	sysUser.UpdateUserRole(json)
+	c.String(http.StatusOK, "")
+}

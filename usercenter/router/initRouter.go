@@ -21,6 +21,7 @@ func SetupRouter() *gin.Engine {
 		userRouter.DELETE("/:id", userHandler.DeleteUser)
 		userRouter.PUT("/:id/attr/password", userHandler.UpdatePassword)
 		userRouter.GET("/:id/roles", userHandler.GetAllRoleWithCheckedByUserId)
+		userRouter.PUT("/:id/roles", userHandler.UpdateUserRole)
 	}
 
 	roleRouter := router.Group("role")

@@ -71,6 +71,11 @@ type UpdatePasswordByIdRequest struct {
 	NewPasswordAgain string `json:"new_password_again"` // 新密码
 }
 
+type UpdateUserRoleRequest struct {
+	Id     int `json:"id"`
+	RoleId int `json:"role_id"`
+}
+
 func GetAllUser(request GetAllUserRequest) (list []SysUser, count int) {
 	strSql := `
 select id,
@@ -315,4 +320,26 @@ select ifnull((select 1
 		log.Panicln("GetAllRoleWithCheckedByUserId err: ", checkErr.Error())
 	}
 	return exist
+}
+
+func UpdateUserRole(request UpdateUserRoleRequest) (success bool) {
+	deleteSql := `
+delete
+from sys_user_role
+where user_id = ?;
+`
+	updateSql := `
+insert into sys_user_role
+    (user_id, role_id)
+    VALUE (?, ?);
+`
+	tx := db.Db.MustBegin()
+	tx.MustExec(deleteSql, request.Id)
+	tx.MustExec(updateSql, request.Id, request.RoleId)
+	err := tx.Commit()
+	if err != nil {
+		log.Panicln("UpdateUserRole err: ", err.Error())
+	}
+
+	return true
 }
