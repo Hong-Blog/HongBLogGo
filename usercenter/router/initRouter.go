@@ -24,7 +24,7 @@ func SetupRouter() *gin.Engine {
 		userRouter.PUT("/:id/roles", userHandler.UpdateUserRole)
 	}
 
-	roleRouter := router.Group("role")
+	roleRouter := router.Group("roles")
 	{
 		roleRouter.GET("/", roleHandler.RoleList)
 	}
