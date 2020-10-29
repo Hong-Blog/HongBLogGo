@@ -302,3 +302,17 @@ select ifnull((select 1
 	}
 	return nil
 }
+
+func (u *SysUser) ExistById() bool {
+	exist := false
+	checkExistSql := `
+select ifnull((select 1
+               from sys_user
+               where id = ?
+               limit 1), 0) exist
+`
+	if checkErr := db.Db.QueryRow(checkExistSql, u.Id).Scan(&exist); checkErr != nil {
+		log.Panicln("GetAllRoleWithCheckedByUserId err: ", checkErr.Error())
+	}
+	return exist
+}

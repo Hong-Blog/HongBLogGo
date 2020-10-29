@@ -5,6 +5,7 @@ import (
 	"log"
 	"usercenter/db"
 	"usercenter/models"
+	"usercenter/models/sysUser"
 )
 
 type SysRole struct {
@@ -58,6 +59,13 @@ from sys_role
 }
 
 func GetAllRoleWithCheckedByUserId(userId int) (list []RoleWithChecked) {
+	user := sysUser.SysUser{Id: userId}
+	exist := user.ExistById()
+
+	if !exist {
+		return make([]RoleWithChecked, 0)
+	}
+
 	dataSql := `
 select r.*, if(isnull(sur.id), 0, 1) checked
 from sys_role r
