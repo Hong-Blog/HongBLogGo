@@ -1,6 +1,8 @@
 package main
 
-import "usercenter/router"
+import (
+	"usercenter/router"
+)
 
 func main() {
 	engine := router.SetupRouter()

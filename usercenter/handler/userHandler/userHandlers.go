@@ -8,6 +8,7 @@ import (
 	"usercenter/models"
 	"usercenter/models/sysRole"
 	"usercenter/models/sysUser"
+	"usercenter/validator"
 )
 
 func UserList(c *gin.Context) {
@@ -56,7 +57,7 @@ func UpdateUser(c *gin.Context) {
 func AddUser(c *gin.Context) {
 	req := sysUser.AddUserRequest{}
 	if err := c.ShouldBind(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: validator.Translate(err)})
 		return
 	}
 	req.RegIp = c.ClientIP()

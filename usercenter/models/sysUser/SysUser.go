@@ -54,13 +54,13 @@ type UpdateUserRequest struct {
 }
 
 type AddUserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"` // 登录密码
-	Nickname string `json:"nickname"` // 昵称
-	Mobile   string `json:"mobile"`   // 手机号
-	Email    string `json:"email"`    // 邮箱地址
-	Qq       string `json:"qq"`       // QQ
-	RegIp    string `json:"reg_ip"`   // 注册IP
+	Username string `json:"username" binding:"required" display:"用户名"`
+	Password string `json:"password" binding:"required" display:"密码"` // 登录密码
+	Nickname string `json:"nickname" binding:"required"`              // 昵称
+	Mobile   string `json:"mobile"`                                   // 手机号
+	Email    string `json:"email" binding:"required,email"`           // 邮箱地址
+	Qq       string `json:"qq"`                                       // QQ
+	RegIp    string `json:"reg_ip"`                                   // 注册IP
 }
 
 type UpdatePasswordByIdRequest struct {
