@@ -114,7 +114,7 @@ from sys_user
 		filter = " where username like ? "
 		params = append(params, "%"+request.KeyWord+"%")
 	}
-	strSql += filter + " limit ?, ?;"
+	strSql += filter + " order by id desc limit ?, ?;"
 	countSql := "select count(1) from sys_user " + filter
 	err := db.Db.Get(&count, countSql, params...)
 	if err != nil {
