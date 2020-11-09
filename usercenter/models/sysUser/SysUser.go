@@ -58,7 +58,7 @@ type AddUserRequest struct {
 	Password string `json:"password" binding:"required" display:"密码"` // 登录密码
 	Nickname string `json:"nickname" binding:"required"`              // 昵称
 	Mobile   string `json:"mobile"`                                   // 手机号
-	Email    string `json:"email" binding:"required,email"`           // 邮箱地址
+	Email    string `json:"email" binding:"email"`                    // 邮箱地址
 	Qq       string `json:"qq"`                                       // QQ
 	RegIp    string `json:"reg_ip"`                                   // 注册IP
 }
@@ -334,6 +334,7 @@ insert into sys_user_role
     VALUE (?, ?);
 `
 	tx := db.Db.MustBegin()
+	defer tx.Rollback()
 	tx.MustExec(deleteSql, request.Id)
 	tx.MustExec(updateSql, request.Id, request.RoleId)
 	err := tx.Commit()

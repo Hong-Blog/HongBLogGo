@@ -18,7 +18,7 @@ func SetupRouter() *gin.Engine {
 		userRouter.GET(`/`, userHandler.UserList)
 		userRouter.GET("/:id", userHandler.GetById)
 		userRouter.PUT("/:id", userHandler.UpdateUser)
-		userRouter.POST("/", userHandler.AddUser)
+		userRouter.POST("", userHandler.AddUser)
 		userRouter.DELETE("/:id", userHandler.DeleteUser)
 		userRouter.PUT("/:id/attr/password", userHandler.UpdatePassword)
 		userRouter.GET("/:id/roles", userHandler.GetAllRoleWithCheckedByUserId)
