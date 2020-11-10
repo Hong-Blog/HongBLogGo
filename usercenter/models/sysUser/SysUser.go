@@ -110,8 +110,9 @@ from sys_user
 `
 	var params = make([]interface{}, 0)
 	var filter string
+	filter += " where is_deleted = false "
 	if len(request.KeyWord) != 0 {
-		filter = " where username like ? "
+		filter = " username like ? "
 		params = append(params, "%"+request.KeyWord+"%")
 	}
 	strSql += filter + " order by id desc limit ?, ?;"
