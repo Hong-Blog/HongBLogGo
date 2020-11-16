@@ -1,0 +1,38 @@
+definitions:
+  sysRole.SysRole:
+    properties:
+      available:
+        type: integer
+      create_time:
+        description: 添加时间
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        description: 角色名
+        type: string
+      update_time:
+        description: 更新时间
+        type: string
+    type: object
+info:
+  contact: {}
+  title: 用户中心API
+  version: "1.0"
+paths:
+  /roles:
+    get:
+      description: 角色列表
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/sysRole.SysRole'
+            type: array
+      summary: 角色列表
+      tags:
+      - 角色
+swagger: "2.0"

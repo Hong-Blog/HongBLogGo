@@ -8,6 +8,12 @@ import (
 	"usercenter/models/sysRole"
 )
 
+// 角色列表
+// @Summary 角色列表
+// @Description 角色列表
+// @Tags 角色
+// @Success 200 {array} sysRole.SysRole
+// @Router /roles [get]
 func RoleList(c *gin.Context) {
 	var req = sysRole.GetAllRoleRequest{}
 	pageIndex, _ := strconv.Atoi(c.DefaultQuery("pageIndex", "1"))
