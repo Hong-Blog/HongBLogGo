@@ -31,14 +31,154 @@ var doc = `{
                     "角色"
                 ],
                 "summary": "角色列表",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "default": 1,
+                        "description": "pageIndex",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "default": 10,
+                        "description": "pageSize",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "关键词",
+                        "name": "keyWord",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/sysRole.SysRole"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.PagedResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/sysRole.SysRole"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "角色列表",
+                "tags": [
+                    "角色"
+                ],
+                "summary": "添加角色",
+                "parameters": [
+                    {
+                        "description": "添加角色",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/sysRole.AddRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{id}": {
+            "get": {
+                "description": "根据id获取角色信息",
+                "tags": [
+                    "角色"
+                ],
+                "summary": "根据id获取角色信息",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/sysRole.SysRole"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "根据id更新角色",
+                "tags": [
+                    "角色"
+                ],
+                "summary": "根据id更新角色",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    },
+                    {
+                        "description": "更新角色",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/sysRole.UpdateRoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "根据id更新角色",
+                "tags": [
+                    "角色"
+                ],
+                "summary": "根据id删除角色",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -46,6 +186,39 @@ var doc = `{
         }
     },
     "definitions": {
+        "models.PagedResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "sysRole.AddRoleRequest": {
+            "type": "object",
+            "required": [
+                "available",
+                "description",
+                "name"
+            ],
+            "properties": {
+                "available": {
+                    "description": "是否可用 0 不可用 1 可用",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "角色描述",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "角色名称",
+                    "type": "string"
+                }
+            }
+        },
         "sysRole.SysRole": {
             "type": "object",
             "properties": {
@@ -68,6 +241,31 @@ var doc = `{
                 },
                 "update_time": {
                     "description": "更新时间",
+                    "type": "string"
+                }
+            }
+        },
+        "sysRole.UpdateRoleRequest": {
+            "type": "object",
+            "required": [
+                "available",
+                "description",
+                "name"
+            ],
+            "properties": {
+                "available": {
+                    "description": "是否可用 0 不可用 1 可用",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "角色描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "角色名称",
                     "type": "string"
                 }
             }

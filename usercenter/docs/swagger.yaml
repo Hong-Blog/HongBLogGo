@@ -1,4 +1,27 @@
 definitions:
+  models.PagedResponse:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+    type: object
+  sysRole.AddRoleRequest:
+    properties:
+      available:
+        description: 是否可用 0 不可用 1 可用
+        type: integer
+      description:
+        description: 角色描述
+        type: string
+      name:
+        description: 角色名称
+        type: string
+    required:
+    - available
+    - description
+    - name
+    type: object
   sysRole.SysRole:
     properties:
       available:
@@ -17,6 +40,24 @@ definitions:
         description: 更新时间
         type: string
     type: object
+  sysRole.UpdateRoleRequest:
+    properties:
+      available:
+        description: 是否可用 0 不可用 1 可用
+        type: integer
+      description:
+        description: 角色描述
+        type: string
+      id:
+        type: integer
+      name:
+        description: 角色名称
+        type: string
+    required:
+    - available
+    - description
+    - name
+    type: object
 info:
   contact: {}
   title: 用户中心API
@@ -25,14 +66,103 @@ paths:
   /roles:
     get:
       description: 角色列表
+      parameters:
+      - default: 1
+        description: pageIndex
+        in: query
+        name: pageIndex
+        type: number
+      - default: 10
+        description: pageSize
+        in: query
+        name: pageSize
+        type: number
+      - description: 关键词
+        in: query
+        name: keyWord
+        type: number
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/sysRole.SysRole'
-            type: array
+            allOf:
+            - $ref: '#/definitions/models.PagedResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/sysRole.SysRole'
+                  type: array
+              type: object
       summary: 角色列表
+      tags:
+      - 角色
+    post:
+      description: 角色列表
+      parameters:
+      - description: 添加角色
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/sysRole.AddRoleRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 添加角色
+      tags:
+      - 角色
+  /roles/{id}:
+    delete:
+      description: 根据id更新角色
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 根据id删除角色
+      tags:
+      - 角色
+    get:
+      description: 根据id获取角色信息
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/sysRole.SysRole'
+      summary: 根据id获取角色信息
+      tags:
+      - 角色
+    put:
+      description: 根据id更新角色
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: number
+      - description: 更新角色
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/sysRole.UpdateRoleRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 根据id更新角色
       tags:
       - 角色
 swagger: "2.0"
