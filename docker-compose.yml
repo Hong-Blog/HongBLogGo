@@ -17,6 +17,8 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-p123qwe"]
       timeout: 3s
       retries: 10
+    networks: 
+      - hong-net
 
   redis.db:
     image: redis:6.0
@@ -29,3 +31,8 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 3s
       retries: 10
+    networks: 
+      - hong-net
+
+networks: 
+  hong-net:
