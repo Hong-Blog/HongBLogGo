@@ -12,7 +12,7 @@ import (
 func main() {
 	engine := router.SetupRouter()
 
-	url := ginSwagger.URL("/swagger/doc.json")
+	url := ginSwagger.URL("./doc.json")
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	_ = engine.Run(":8081")
