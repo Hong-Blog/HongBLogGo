@@ -16,7 +16,7 @@ import (
 // @Success 200 {object} models.PagedResponse{data=[]sysRole.SysRole}
 // @param pageIndex query number false "pageIndex" default(1)
 // @param pageSize query number false "pageSize" default(10)
-// @param keyWord query number false "关键词"
+// @param keyWord query string false "关键词"
 // @Router /roles [get]
 func RoleList(c *gin.Context) {
 	var req = sysRole.GetAllRoleRequest{}
