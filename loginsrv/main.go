@@ -32,7 +32,7 @@ func main() {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
 
-	groupAuth := r.GET("/auth")
+	groupAuth := r.Group("/auth")
 	{
 		groupAuth.GET("refresh_token", authMiddleware.RefreshHandler)
 		groupAuth.Use(authMiddleware.MiddlewareFunc())
