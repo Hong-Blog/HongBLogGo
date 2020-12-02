@@ -27,6 +27,7 @@ func UserList(c *gin.Context) {
 	req.PageIndex = pageIndex
 	req.PageSize = pageSize
 	req.KeyWord = c.DefaultQuery("keyWord", "")
+	req.Username = c.DefaultQuery("username", "")
 
 	users, count := sysUser.GetAllUser(req)
 

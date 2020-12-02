@@ -46,6 +46,10 @@ from sys_user
 		filter += " and username like ? "
 		params = append(params, "%"+request.KeyWord+"%")
 	}
+	if len(request.Username) != 0 {
+		filter += " and username = ? "
+		params = append(params, request.Username)
+	}
 	strSql += filter + " order by id desc limit ?, ?;"
 	countSql := "select count(1) from sys_user " + filter
 	err := db.Db.Get(&count, countSql, params...)

@@ -6,7 +6,8 @@ import (
 
 type GetAllUserRequest struct {
 	models.PagedRequest
-	KeyWord string `json:"key_word"`
+	KeyWord  string `json:"key_word"`
+	Username string `json:"username"`
 }
 
 type UpdateUserRequest struct {
