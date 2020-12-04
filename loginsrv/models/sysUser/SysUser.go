@@ -2,9 +2,6 @@ package sysUser
 
 import (
 	"github.com/guregu/null"
-	"log"
-	"loginsrv/db"
-	"loginsrv/utils"
 )
 
 type SysUser struct {
@@ -36,22 +33,4 @@ type SysUser struct {
 	Status        null.Int    `json:"status" swaggertype:"integer"`                              // 用户状态
 	CreateTime    null.Time   `json:"create_time" db:"create_time" swaggertype:"string"`         // 注册时间
 	UpdateTime    null.Time   `json:"update_time" db:"update_time" swaggertype:"string"`         // 更新时间
-}
-
-func GetByUsernameAndPassword(username string, password string) (user SysUser) {
-	encryptedPassword := utils.PasswordEncrypt(password, username)
-	dataSql := `
-select *
-from sys_user
-where username = ?
-  and password = ?
-  and is_deleted = false
-limit 1
-`
-	sysUser := SysUser{}
-	err := db.Db.Get(&sysUser, dataSql, username, encryptedPassword)
-	if err != nil {
-		log.Panicln("Login error: ", err.Error())
-	}
-	return sysUser
 }
