@@ -1,6 +1,8 @@
 package jwt_middleware
 
 import (
+	"loginsrv/http_service"
+	"loginsrv/utils"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -16,9 +18,9 @@ type login struct {
 
 // User demo
 type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
+	Id       int
+	UserName string
+	NickName string
 }
 
 func JwtMiddleware() (authMiddleware *jwt.GinJWTMiddleware, err error) {
@@ -50,15 +52,21 @@ func JwtMiddleware() (authMiddleware *jwt.GinJWTMiddleware, err error) {
 			userID := loginVals.Username
 			password := loginVals.Password
 
-			if (userID == "admin" && password == "admin") || (userID == "test" && password == "test") {
-				return &User{
-					UserName:  userID,
-					LastName:  "Bo-Yi",
-					FirstName: "Wu",
-				}, nil
+			user, err := http_service.FindUser(userID)
+			if err != nil {
+				return nil, jwt.ErrFailedAuthentication
 			}
 
-			return nil, jwt.ErrFailedAuthentication
+			encrypt := utils.PasswordEncrypt(password, userID)
+			if encrypt != user.Password.String {
+				return nil, jwt.ErrFailedAuthentication
+			}
+
+			return &User{
+				Id:       user.Id,
+				UserName: user.Username.String,
+				NickName: user.Nickname.String,
+			}, nil
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			if v, ok := data.(*User); ok && v.UserName == "admin" {
