@@ -26,4 +26,8 @@ require (
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/tools v0.0.0-20201121010211-780cb80bd7fb // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
+	github.com/appleboy/gin-jwt/v2 v2.6.4
+	github.com/go-playground/assert/v2 v2.0.1
+	github.com/go-redis/redis/v8 v8.4.2
+	github.com/go-resty/resty/v2 v2.3.0
 )
