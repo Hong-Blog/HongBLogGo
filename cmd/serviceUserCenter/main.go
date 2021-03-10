@@ -1,8 +1,6 @@
 package main
 
 import (
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "hong-blog/docs"
 	"hong-blog/router"
 )
@@ -12,8 +10,8 @@ import (
 func main() {
 	engine := router.SetupUserRouter()
 
-	url := ginSwagger.URL("./doc.json")
-	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
+	//url := ginSwagger.URL("./doc.json")
+	//engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	_ = engine.Run(":8081")
 }
