@@ -15,11 +15,11 @@ FROM alpine as login
 WORKDIR /app
 COPY --from=builder /app/publish/serviceLogin .
 ENV GIN_MODE=release \
-    PORT=8082 \
+    PORT=80 \
     REDIS_URL="redis://127.0.0.1:6379/1" \
     PREFIX_USER_SERVICE="http://127.0.0.1:18081" \
     DATA_SOURCE="root:123qwe@tcp(127.0.0.1:3306)/hongblog?parseTime=true"
-EXPOSE 8082
+EXPOSE 80
 ENTRYPOINT ["./serviceLogin"]
 
 FROM alpine as post
@@ -36,8 +36,8 @@ FROM alpine as userCenter
 WORKDIR /app
 COPY --from=builder /app/publish/serviceUserCenter .
 ENV GIN_MODE=release \
-    PORT=8081 \
+    PORT=80 \
     REDIS_URL="redis://127.0.0.1:6379/1" \
     DATA_SOURCE="root:123qwe@tcp(127.0.0.1:3306)/hongblog?parseTime=true"
-EXPOSE 8081
+EXPOSE 80
 ENTRYPOINT ["./serviceUserCenter"]

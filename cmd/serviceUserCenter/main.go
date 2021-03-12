@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	_ "hong-blog/docs"
 	"hong-blog/router"
 )
@@ -13,5 +14,10 @@ func main() {
 	//url := ginSwagger.URL("./doc.json")
 	//engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
-	_ = engine.Run(":8081")
+	addr := ":80"
+	if gin.Mode() == gin.DebugMode {
+		addr = ":8081"
+	}
+
+	_ = engine.Run(addr)
 }

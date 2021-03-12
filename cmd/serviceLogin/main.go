@@ -43,5 +43,10 @@ func main() {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
 
-	_ = r.Run(":8082")
+	addr := ":80"
+	if gin.Mode() == gin.DebugMode {
+		addr = ":8082"
+	}
+
+	_ = r.Run(addr)
 }
