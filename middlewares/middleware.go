@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"context"
+	"errors"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"hong-blog/db"
@@ -25,6 +26,12 @@ type User struct {
 	UserName string
 	NickName string
 }
+
+var (
+	ErrMissingLoginValues = errors.New("用户名或密码不能为空")
+
+	ErrFailedAuthentication = errors.New("用户名或密码错误")
+)
 
 func JwtMiddleware() (authMiddleware *jwt.GinJWTMiddleware, err error) {
 	authMiddleware, err = jwt.New(&jwt.GinJWTMiddleware{
@@ -50,19 +57,19 @@ func JwtMiddleware() (authMiddleware *jwt.GinJWTMiddleware, err error) {
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVals login
 			if err := c.ShouldBind(&loginVals); err != nil {
-				return "", jwt.ErrMissingLoginValues
+				return "", ErrMissingLoginValues
 			}
 			userID := loginVals.Username
 			password := loginVals.Password
 
 			user, err := httpService.FindUser(userID)
 			if err != nil {
-				return nil, jwt.ErrFailedAuthentication
+				return nil, ErrFailedAuthentication
 			}
 
 			encrypt := utils.PasswordEncrypt(password, userID)
 			if encrypt != user.Password.String {
-				return nil, jwt.ErrFailedAuthentication
+				return nil, ErrFailedAuthentication
 			}
 
 			return &User{
@@ -80,9 +87,10 @@ func JwtMiddleware() (authMiddleware *jwt.GinJWTMiddleware, err error) {
 			db.RedisClient.Set(ctx, "token:"+UserName, tokenString, authMiddleware.Timeout)
 
 			c.JSON(http.StatusOK, gin.H{
-				"code":   http.StatusOK,
-				"token":  tokenString,
-				"expire": expire.Format(time.RFC3339),
+				"code":    http.StatusOK,
+				"token":   tokenString,
+				"expire":  expire.Format(time.RFC3339),
+				"message": "登录成功",
 			})
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
